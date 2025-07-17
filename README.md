@@ -52,8 +52,6 @@ It grabs your terminal buffer, cleans it up (sort of), and asks Copilot to expla
 - Captures your terminal buffer using AppleScript (for Apple Terminal).
 - Cleans up the output, removing empty lines and fixing line endings.
 - Extracts the last (or Nth last) line(s) and sends them to `gh copilot explain` or `gh copilot suggest`.
-- Uses the helper function `getLastLinesFromFile` to keep the code DRY and maintainable.
-- Optionally keeps or deletes the temporary buffer file based on the `DEBUG` variable.
 
 ## Configuration
 
