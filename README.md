@@ -1,12 +1,17 @@
 # Terminal Copilot Explain Helper
 
-This project provides shell functions and helpers to quickly explain your last terminal command using GitHub Copilot CLI, with special support for Apple Terminal.
+*A dumb experimental github copilot cli wrapper*
+
+Ever wish you could ask GitHub Copilot to explain what you just did in your terminal, but with as little sophistication as possible? Meet `github-copilot-cli-wrapper`: a gloriously simple, slightly hacky, and very experimental set of shell functions that let you throw your last terminal line (or a few) at Copilot CLI and see what it thinks. 
+
+It grabs your terminal buffer, cleans it up (sort of), and asks Copilot to explain or suggest improvements—because sometimes you just want answers, and you want them now, even if the method is a bit... dumb. Apple Terminal only, clipboard shenanigans included. Use at your own risk (and amusement)!
 
 ## Features
 
-- **`??`**: Explains your last (or Nth last) terminal command using GitHub Copilot CLI.
-- **`?!`**: Suggests improvements or alternatives for a given command using Copilot CLI.
+- **`??`**: Explains your last (or Nth last) terminal line(s) using GitHub Copilot CLI.
+- **`?!`**: Suggests improvements or alternatives for a given line or lines using Copilot CLI.
 - **Automatic terminal output capture**: Grabs your recent terminal buffer for context.
+- **Helper function `getLastLinesFromFile`**: Extracts the last N non-empty, cleaned lines from the terminal export file, making the code DRY and easier to maintain.
 
 ## Requirements
 
@@ -25,40 +30,35 @@ This project provides shell functions and helpers to quickly explain your last t
    ```
 3. **Source the script in your shell:**
    ```sh
-   source /path/to/custom/explain.sh
+   source /path/to/custom/github-copilot-cli-wrapper.sh
    ```
    Or add this line to your `.bashrc` or `.zshrc` for automatic loading.
 
 ## Usage
 
-- **Explain the last command:**
-  ```sh
-  ??
-  ```
-- **Explain the last N commands:**
-  ```sh
-  ?? 3
-  ```
-- **Explain a specific command:**
-  ```sh
-  ?? "ls -la /tmp"
-  ```
-- **Get suggestions for a command:**
-  ```sh
-  ?! "find . -name '*.tmp'"
-  ```
+| Action                              | Command                        | Description                                                      |
+|-------------------------------------|--------------------------------|------------------------------------------------------------------|
+| Explain the last terminal line      | `??`                           | Explains the most recent terminal line                            |
+| Explain the last N terminal lines   | `?? 3`                         | Explains the last 3 terminal lines                                |
+| Explain a specific command or text  | `?? "ls -la /tmp"`             | Explains the given command or text                                |
+| Suggest for the last terminal line  | `?!`                           | Suggests improvements or alternatives for the most recent line    |
+| Suggest for the last N terminal lines | `?! 3`                       | Suggests improvements or alternatives for the last 3 lines        |
+| Suggest for a specific command or text | `?! "find . -name '*.tmp'"` | Suggests improvements or alternatives for a given command or text |
+
+**Note:** The number argument to `??` or `?!` refers to lines, not necessarily full shell commands. This means multi-line commands or outputs are treated as separate lines.
 
 ## How it Works
 
 - Captures your terminal buffer using AppleScript (for Apple Terminal).
 - Cleans up the output, removing empty lines and fixing line endings.
-- Extracts the last (or Nth last) command and sends it to `gh copilot explain`.
+- Extracts the last (or Nth last) line(s) and sends them to `gh copilot explain` or `gh copilot suggest`.
+- Uses the helper function `getLastLinesFromFile` to keep the code DRY and maintainable.
 - Optionally keeps or deletes the temporary buffer file based on the `DEBUG` variable.
 
 ## Configuration
 
 - **Debug mode:**  
-  Set `DEBUG=1` at the top of `explain.sh` to keep temp files for debugging.  
+  Set `DEBUG=1` at the top of `github-copilot-cli-wrapper.sh` to keep temp files for debugging.  
   Set `DEBUG=0` to auto-delete them after use.
 
 ## Limitations
@@ -68,7 +68,7 @@ This project provides shell functions and helpers to quickly explain your last t
 
 ## File Overview
 
-- `explain.sh`: Main script with `??` and `?!` functions.
+- `github-copilot-cli-wrapper.sh`: Main script with `??` and `?!` functions.
 - `copy-apple-terminal.sh`: Helper script to copy Apple Terminal buffer to a file.
 
 ## License

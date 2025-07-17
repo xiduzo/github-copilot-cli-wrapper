@@ -4,34 +4,36 @@
 DEBUG=0
 
 OUTFILE_TEMPLATE="/tmp/shell/terminal_export_%s.txt"
+GH_COPILOT_NO_TELEMETRY=1
+
 
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
   echo "Please source this script: 'source explain.sh' or '. explain.sh'"
   return 1 2>/dev/null || exit 1
 fi
 
-debug() {
+_debug() {
   if [[ "$DEBUG" == "1" ]]; then
     echo "DEBUG: $*"
   fi
 }
 
-info() {
+_info() {
   echo "INFO: $*"
 }
 
-verifyGithubCopilotIsInstalled() {
+_verifyGithubCopilotIsInstalled() {
   if ! command -v gh &>/dev/null; then
-    info "GitHub CLI (gh) is not installed. Please install it from https://cli.github.com/."
+    _info "GitHub CLI (gh) is not installed. Please install it from https://cli.github.com/."
     return 1
   fi
   if ! gh extension list | grep -q 'copilot'; then
-    info "GitHub Copilot CLI extension is not installed. Install it from https://docs.github.com/en/copilot/how-tos/set-up/installing-github-copilot-in-the-cli"
+    _info "GitHub Copilot CLI extension is not installed. Install it from https://docs.github.com/en/copilot/how-tos/set-up/installing-github-copilot-in-the-cli"
     return 1
   fi
 }
 
-saveTerminalOutput() {
+_saveTerminalOutput() {
   local session_id="$(tty | sed 's#/dev/##;s#/#_#g')_$$"
   local outfile
   printf -v outfile "$OUTFILE_TEMPLATE" "$session_id"
@@ -51,20 +53,24 @@ saveTerminalOutput() {
   fi
 }
 
-# Define the ?? function with telemetry disabled
+_getLastLinesFromFile() {
+  local file="$1"
+  local n="${2:-1}"
+  LC_CTYPE=C tr '\r' '\n' < "$file" | grep -v '^[[:space:]]*$' | sed '$d' | tail -n "$n"
+}
+
 explain() {
-  export GH_COPILOT_NO_TELEMETRY=1
-  verifyGithubCopilotIsInstalled || return 1
+  _verifyGithubCopilotIsInstalled || return 1
   if [[ $# -eq 0 ]]; then
-    saveTerminalOutput
-    cmd=$(LC_CTYPE=C tr '\r' '\n' < "$TERMINAL_EXPORT_FILE" | grep -v '^[[:space:]]*$' | sed '$d' | tail -n 1)
+    _saveTerminalOutput
+    cmd=$(_getLastLinesFromFile "$TERMINAL_EXPORT_FILE")
     gh copilot explain "$cmd"
-    debug "asked about $cmd"
+    _debug "EXPLAIN: $cmd"
   elif [[ $1 =~ ^[0-9]+$ ]]; then
-    saveTerminalOutput
-    cmd=$(LC_CTYPE=C tr '\r' '\n' < "$TERMINAL_EXPORT_FILE" | grep -v '^[[:space:]]*$' | sed '$d' | tail -n "$1")
+    _saveTerminalOutput
+    cmd=$(_getLastLinesFromFile "$TERMINAL_EXPORT_FILE" "$1")
     gh copilot explain "$cmd"
-    debug "asked about $cmd"
+    _debug "EXPLAIN: $cmd"
   else
     gh copilot explain "$*"
   fi
@@ -75,7 +81,21 @@ explain() {
 }
 
 suggest() {
-  gh copilot suggest "$*"
+  _verifyGithubCopilotIsInstalled || return 1
+  if [[ $# -eq 0 ]]; then
+    _saveTerminalOutput
+    cmd=$(_getLastLinesFromFile "$TERMINAL_EXPORT_FILE")
+    gh copilot suggest "$cmd"
+    debug "SUGGEST: $cmd"
+  elif [[ $1 =~ ^[0-9]+$ ]]; then
+    _saveTerminalOutput
+    cmd=$(_getLastLinesFromFile "$TERMINAL_EXPORT_FILE" "$1")
+    gh copilot suggest "$cmd"
+    debug "SUGGEST: $cmd"
+  else
+    gh copilot suggest "$*"
+  fi
+  
 }
 
 
