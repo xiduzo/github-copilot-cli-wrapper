@@ -10,8 +10,6 @@ It grabs your terminal buffer, cleans it up (sort of), and asks Copilot to expla
 
 - **`??`**: Explains your last (or Nth last) terminal line(s) using GitHub Copilot CLI.
 - **`?!`**: Suggests improvements or alternatives for a given line or lines using Copilot CLI.
-- **Automatic terminal output capture**: Grabs your recent terminal buffer for context.
-- **Helper function `getLastLinesFromFile`**: Extracts the last N non-empty, cleaned lines from the terminal export file, making the code DRY and easier to maintain.
 
 ## Requirements
 
