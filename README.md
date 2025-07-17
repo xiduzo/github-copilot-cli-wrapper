@@ -36,14 +36,14 @@ It grabs your terminal buffer, cleans it up (sort of), and asks Copilot to expla
 
 ## Usage
 
-| Action                              | Command                        | Description                                                      |
-|-------------------------------------|--------------------------------|------------------------------------------------------------------|
-| Explain the last terminal line      | `??`                           | Explains the most recent terminal line                            |
-| Explain the last N terminal lines   | `?? 3`                         | Explains the last 3 terminal lines                                |
-| Explain a specific command or text  | `?? "ls -la /tmp"`             | Explains the given command or text                                |
-| Suggest for the last terminal line  | `?!`                           | Suggests improvements or alternatives for the most recent line    |
-| Suggest for the last N terminal lines | `?! 3`                       | Suggests improvements or alternatives for the last 3 lines        |
-| Suggest for a specific command or text | `?! "find . -name '*.tmp'"` | Suggests improvements or alternatives for a given command or text |
+| Command                        | Description                                      |
+|--------------------------------|--------------------------------------------------|
+| `??`                           | Explain the most recent terminal line             |
+| `?? 3`                         | Explain the last 3 terminal lines                 |
+| `?? "ls -la /tmp"`             | Explain the given command or text                 |
+| `?!`                           | Suggest for the most recent terminal line         |
+| `?! 3`                         | Suggest for the last 3 terminal lines             |
+| `?! "find . -name '*.tmp'"`    | Suggest for a given command or text               |
 
 **Note:** The number argument to `??` or `?!` refers to lines, not necessarily full shell commands. This means multi-line commands or outputs are treated as separate lines.
 
