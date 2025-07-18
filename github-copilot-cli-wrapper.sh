@@ -1,14 +1,14 @@
 # ~/custom/explain.sh
 
 # 1 = enabled, 0 = disabled
-DEBUG=0
+DEBUG=1
 
 OUTFILE_TEMPLATE="/tmp/shell/terminal_export_%s.txt"
 GH_COPILOT_NO_TELEMETRY=1
 
 
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-  echo "Please source this script: 'source explain.sh' or '. explain.sh'"
+  _info "Please source this script: 'source explain.sh' or '. explain.sh'"
   return 1 2>/dev/null || exit 1
 fi
 
@@ -86,16 +86,16 @@ suggest() {
     _saveTerminalOutput
     cmd=$(_getLastLinesFromFile "$TERMINAL_EXPORT_FILE")
     gh copilot suggest "$cmd"
-    debug "SUGGEST: $cmd"
+    _debug "SUGGEST: $cmd"
   elif [[ $1 =~ ^[0-9]+$ ]]; then
     _saveTerminalOutput
     cmd=$(_getLastLinesFromFile "$TERMINAL_EXPORT_FILE" "$1")
     gh copilot suggest "$cmd"
-    debug "SUGGEST: $cmd"
+    _debug "SUGGEST: $cmd"
   else
     gh copilot suggest "$*"
   fi
-  
+
 }
 
 
